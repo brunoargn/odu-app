@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F7F5F0">
+<title>Odù</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F5F0;--bg-card:#EDE8DE;--ink:#2C2A25;--ink-mid:#5A5650;
+  --ink-soft:#8A8680;--ink-faint:#C4BEB5;--rule:rgba(44,42,37,0.08);
+  --do:#6A9478;--dont:#B07D65;
+  --sans:'DM Sans',sans-serif;--serif:'Cormorant Garamond',serif;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);overscroll-behavior:none}
+body{font-family:var(--sans);color:var(--ink);display:flex;justify-content:center}
+.shell{width:100%;max-width:430px;min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
+.statusbar{display:flex;justify-content:space-between;padding:calc(var(--safe-top) + 14px) 28px 6px;font-size:12px;color:var(--ink-soft)}
+.topnav{display:flex;justify-content:space-between;align-items:center;padding:4px 28px 16px;border-bottom:0.5px solid var(--rule)}
+.appname{font-size:12px;font-weight:400;letter-spacing:0.26em;color:var(--ink);text-transform:uppercase}
+.daylabel{font-size:11px;letter-spacing:0.12em;color:var(--ink-soft);text-transform:uppercase;font-weight:300}
+.daypills{display:flex;justify-content:center;gap:5px;padding:14px 16px 0;flex-wrap:wrap}
+.pill{font-size:10px;letter-spacing:0.06em;padding:5px 10px;border-radius:20px;cursor:pointer;text-transform:uppercase;font-weight:400;border:0.5px solid rgba(44,42,37,0.16);color:var(--ink-soft);background:transparent;transition:all 0.22s ease;font-family:var(--sans);-webkit-appearance:none;touch-action:manipulation;user-select:none}
+.pill.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pill:active{transform:scale(0.95)}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 28px 100px}
+.scroll::-webkit-scrollbar{display:none}
+.fb{opacity:0;transform:translateY(20px);transition:opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
+.fb.in{opacity:1;transform:translateY(0)}
+.orixa-block{padding:36px 0 16px;text-align:center}
+.orixa-illo{width:120px;height:120px;margin:0 auto 20px}
+.orixa-illo svg{width:120px;height:120px}
+.orixa-micro{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;font-weight:300}
+.orixa-name{font-family:var(--serif);font-size:34px;font-weight:300;color:var(--ink);letter-spacing:0.04em;margin-bottom:20px}
+.rituals{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:4px 0}
+.ritual{background:var(--bg-card);border:0.5px solid rgba(44,42,37,0.1);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:300;color:var(--ink-mid);font-family:var(--serif);font-style:italic}
+.orn{text-align:center;padding:24px 0 8px;color:var(--ink-faint);font-family:var(--serif);font-size:13px;letter-spacing:0.5em}
+.section{padding:20px 0 28px;text-align:center}
+.sec-micro{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-faint);font-weight:300;margin-bottom:20px}
+.proverb{font-family:var(--serif);font-size:27px;font-weight:300;font-style:italic;line-height:1.38;color:var(--ink);padding:0 8px}
+hr.rule{border:none;border-top:0.5px solid var(--rule)}
+.itan-card{background:var(--bg-card);border-radius:16px;padding:26px 22px;margin:4px 0;text-align:center;border:0.5px solid rgba(44,42,37,0.06)}
+.itan-name{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px;font-weight:300}
+.itan-body{font-size:15px;font-weight:300;line-height:1.9;color:var(--ink-mid);font-family:var(--serif);font-style:italic}
+.mid-illo{text-align:center;padding:30px 0 22px}
+.mid-illo svg{width:72px;height:72px;opacity:0.5}
+.guide-title{font-family:var(--serif);font-size:24px;font-weight:300;color:var(--ink);margin-bottom:26px;line-height:1.3}
+.tips-list{display:flex;flex-direction:column;text-align:left}
+.tip{display:flex;gap:14px;padding:16px 0;border-bottom:0.5px solid var(--rule);align-items:flex-start}
+.tip:last-child{border-bottom:none}
+.tip-tag{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;font-weight:400;min-width:34px;padding-top:3px}
+.tip-tag.do{color:var(--do)}
+.tip-tag.dont{color:var(--dont)}
+.tip-text{font-size:14px;font-weight:300;color:var(--ink-mid);line-height:1.65;flex:1}
+.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;display:flex;justify-content:space-around;padding:14px 20px calc(var(--safe-bottom) + 16px);background:rgba(247,245,240,0.96);border-top:0.5px solid var(--rule);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:100}
+.nav-item{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:300;cursor:pointer;padding:6px 10px;touch-action:manipulation}
+.nav-item.on{color:var(--ink)}
+.loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;transition:opacity 0.8s ease}
+.loader.out{opacity:0;pointer-events:none}
+.loader-name{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--ink);letter-spacing:0.14em;margin-bottom:10px}
+.loader-sub{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-faint);font-weight:300}
+.loader-dot{margin-top:44px;width:4px;height:4px;border-radius:50%;background:var(--ink-faint);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:1;transform:scale(1.8)}}
+.flash{position:fixed;inset:0;background:var(--bg);opacity:0;pointer-events:none;z-index:150;transition:opacity 0.15s ease}
+.flash.on{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="loader-name">Odù</div>
+  <div class="loader-sub">Espiritualidade Iorubá</div>
+  <div class="loader-dot"></div>
+</div>
+<div class="flash" id="flash"></div>
+
+<div class="shell">
+  <div class="statusbar">
+    <span id="clk">—</span><span>⬤⬤⬤ 5G</span>
+  </div>
+  <div class="topnav">
+    <span class="appname">Odù</span>
+    <span class="daylabel" id="dlabel">—</span>
+  </div>
+  <div class="daypills">
+    <button class="pill" onclick="go(0)">Seg</button>
+    <button class="pill" onclick="go(1)">Ter</button>
+    <button class="pill" onclick="go(2)">Qua</button>
+    <button class="pill" onclick="go(3)">Qui</button>
+    <button class="pill" onclick="go(4)">Sex</button>
+    <button class="pill" onclick="go(5)">Sáb</button>
+    <button class="pill" onclick="go(6)">Dom</button>
+  </div>
+
+  <div class="scroll" id="scroll">
+    <div class="fb" id="b0">
+      <div class="orixa-block">
+        <div class="orixa-illo" id="main-illo"></div>
+        <div class="orixa-micro">Orixá do dia</div>
+        <div class="orixa-name" id="oname">—</div>
+        <div class="rituals" id="rituals"></div>
+      </div>
+    </div>
+    <div class="fb" id="b1"><div class="orn">· · ✦ · ·</div></div>
+    <div class="fb" id="b2">
+      <div class="section">
+        <div class="sec-micro">Provérbio</div>
+        <div class="proverb" id="prov">—</div>
+      </div>
+    </div>
+    <hr class="rule fb" id="b3">
+    <div class="fb" id="b4">
+      <div class="section" style="padding-bottom:10px"><div class="sec-micro">Itan</div></div>
+      <div class="itan-card">
+        <div class="itan-name" id="ititle">—</div>
+        <div class="itan-body" id="ibody">—</div>
+      </div>
+    </div>
+    <div class="fb" id="b5"><div class="mid-illo" id="mid-illo"></div></div>
+    <div class="fb" id="b6">
+      <div class="section">
+        <div class="sec-micro">Orientações do dia</div>
+        <div class="guide-title" id="gtitle">—</div>
+        <div class="tips-list" id="tips"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottomnav">
+    <span class="nav-item on">Início</span>
+    <span class="nav-item">Orixás</span>
+    <span class="nav-item">Vazio</span>
+    <span class="nav-item">Você</span>
+  </div>
+</div>
+
+<script>
+const I={
+exu:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#F7F5F0"/>
+<rect x="56" y="58" width="8" height="48" fill="#2C2A25" rx="2"/>
+<rect x="56" y="20" width="8" height="42" fill="#2C2A25" rx="2"/>
+<polygon points="60,8 52,24 68,24" fill="#2C2A25"/>
+<rect x="32" y="30" width="7" height="32" fill="#2C2A25" rx="2" transform="rotate(-18,35,46)"/>
+<polygon points="28,22 24,36 38,32" fill="#2C2A25"/>
+<rect x="81" y="30" width="7" height="32" fill="#2C2A25" rx="2" transform="rotate(18,85,46)"/>
+<polygon points="92,22 96,36 82,32" fill="#2C2A25"/>
+<rect x="30" y="96" width="60" height="8" fill="#2C2A25" rx="3"/>
+<rect x="58" y="64" width="4" height="4" fill="#F7F5F0"/>
+<rect x="58" y="74" width="4" height="4" fill="#F7F5F0"/>
+<rect x="58" y="84" width="4" height="4" fill="#F7F5F0"/>
+<rect x="58" y="30" width="4" height="4" fill="#F7F5F0"/>
+<rect x="58" y="42" width="4" height="4" fill="#F7F5F0"/>
+</svg>`,
+
+ogum:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#F7F5F0"/>
+<polygon points="42,14 78,14 86,82 60,94 34,82" fill="#2C2A25"/>
+<rect x="50" y="90" width="20" height="18" fill="#2C2A25" rx="2"/>
+<rect x="38" y="86" width="44" height="8" fill="#2C2A25" rx="2"/>
+<rect x="54" y="22" width="12" height="4" fill="#F7F5F0"/>
+<rect x="52" y="34" width="16" height="4" fill="#F7F5F0"/>
+<rect x="50" y="46" width="20" height="4" fill="#F7F5F0"/>
+<rect x="48" y="58" width="24" height="4" fill="#F7F5F0"/>
+<rect x="46" y="70" width="28" height="4" fill="#F7F5F0"/>
+<rect x="52" y="95" width="16" height="3" fill="#F7F5F0"/>
+<rect x="52" y="102" width="16" height="3" fill="#F7F5F0"/>
+</svg>`,
+
+xango:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#F7F5F0"/>
+<rect x="56" y="46" width="8" height="64" fill="#2C2A25" rx="2"/>
+<path d="M60,18 L30,42 L30,58 L60,48 Z" fill="#2C2A25"/>
+<path d="M60,18 L90,42 L90,58 L60,48 Z" fill="#2C2A25"/>
+<line x1="40" y1="46" x2="58" y2="40" stroke="#F7F5F0" stroke-width="3"/>
+<line x1="36" y1="54" x2="57" y2="47" stroke="#F7F5F0" stroke-width="3"/>
+<line x1="80" y1="46" x2="62" y2="40" stroke="#F7F5F0" stroke-width="3"/>
+<line x1="84" y1="54" x2="63" y2="47" stroke="#F7F5F0" stroke-width="3"/>
+<rect x="58" y="60" width="4" height="4" fill="#F7F5F0"/>
+<rect x="58" y="70" width="4" height="4" fill="#F7F5F0"/>
+<rect x="58" y="80" width="4" height="4" fill="#F7F5F0"/>
+<rect x="58" y="90" width="4" height="4" fill="#F7F5F0"/>
+<ellipse cx="60" cy="13" rx="10" ry="6" fill="#2C2A25"/>
+<line x1="54" y1="12" x2="66" y2="14" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="54" y1="15" x2="66" y2="11" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`,
+
+oxossi:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#F7F5F0"/>
+<path d="M30,96 Q24,60 30,24" stroke="#2C2A25" stroke-width="9" fill="none" stroke-linecap="round"/>
+<line x1="30" y1="24" x2="30" y2="96" stroke="#2C2A25" stroke-width="3"/>
+<line x1="30" y1="60" x2="96" y2="44" stroke="#2C2A25" stroke-width="6" stroke-linecap="round"/>
+<polygon points="98,42 89,36 91,48" fill="#2C2A25"/>
+<polygon points="30,60 22,52 32,55" fill="#2C2A25"/>
+<polygon points="30,60 22,68 32,65" fill="#2C2A25"/>
+<line x1="26" y1="38" x2="33" y2="40" stroke="#F7F5F0" stroke-width="2.5"/>
+<line x1="24" y1="52" x2="31" y2="54" stroke="#F7F5F0" stroke-width="2.5"/>
+<line x1="24" y1="68" x2="31" y2="66" stroke="#F7F5F0" stroke-width="2.5"/>
+<line x1="26" y1="82" x2="33" y2="79" stroke="#F7F5F0" stroke-width="2.5"/>
+<line x1="52" y1="57" x2="55" y2="50" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="68" y1="52" x2="71" y2="45" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`,
+
+oxala:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#F7F5F0"/>
+<ellipse cx="60" cy="72" rx="42" ry="32" fill="#2C2A25"/>
+<path d="M60,54 Q76,54 78,66 Q80,80 68,84 Q54,88 46,76 Q38,62 50,56 Q64,50 70,62 Q74,72 64,76 Q57,79 53,72" stroke="#F7F5F0" stroke-width="2.5" fill="none"/>
+<ellipse cx="42" cy="76" rx="9" ry="12" fill="#F7F5F0"/>
+<ellipse cx="42" cy="76" rx="5" ry="8" fill="#2C2A25"/>
+<line x1="48" y1="44" x2="44" y2="24" stroke="#2C2A25" stroke-width="5" stroke-linecap="round"/>
+<circle cx="44" cy="21" r="5" fill="#2C2A25"/>
+<line x1="58" y1="42" x2="58" y2="20" stroke="#2C2A25" stroke-width="5" stroke-linecap="round"/>
+<circle cx="58" cy="17" r="5" fill="#2C2A25"/>
+<ellipse cx="52" cy="48" rx="16" ry="12" fill="#2C2A25"/>
+<line x1="24" y1="68" x2="38" y2="66" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="22" y1="78" x2="36" y2="76" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="24" y1="88" x2="40" y2="85" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="78" y1="68" x2="92" y2="70" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="80" y1="78" x2="94" y2="78" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="78" y1="88" x2="90" y2="86" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`,
+
+iemanja:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#F7F5F0"/>
+<ellipse cx="56" cy="68" rx="26" ry="30" fill="#2C2A25"/>
+<path d="M72,56 Q84,66 82,78 Q80,88 70,92" stroke="#F7F5F0" stroke-width="3" fill="none"/>
+<ellipse cx="68" cy="68" rx="4" ry="3" fill="#F7F5F0"/>
+<ellipse cx="68" cy="68" rx="2" ry="1.5" fill="#2C2A25"/>
+<ellipse cx="32" cy="68" rx="5" ry="8" fill="#2C2A25"/>
+<ellipse cx="32" cy="68" rx="2.5" ry="4.5" fill="#F7F5F0"/>
+<rect x="48" y="96" width="18" height="14" fill="#2C2A25" rx="2"/>
+<rect x="38" y="98" width="38" height="5" fill="#2C2A25" rx="1"/>
+<line x1="38" y1="100" x2="76" y2="100" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="38" y1="104" x2="76" y2="104" stroke="#F7F5F0" stroke-width="1.5"/>
+<ellipse cx="60" cy="30" rx="26" ry="12" fill="#2C2A25" transform="rotate(-8,60,30)"/>
+<polygon points="30,24 20,16 20,34" fill="#2C2A25" transform="rotate(-8,25,25)"/>
+<circle cx="78" cy="27" r="4" fill="#F7F5F0"/>
+<circle cx="78" cy="27" r="2" fill="#2C2A25"/>
+<path d="M84,30 Q88,28 86,34" stroke="#F7F5F0" stroke-width="1.5" fill="none"/>
+<line x1="52" y1="25" x2="54" y2="32" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="60" y1="22" x2="62" y2="29" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="68" y1="23" x2="69" y2="29" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="44" y1="26" x2="47" y2="33" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="38" y1="60" x2="48" y2="58" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="36" y1="70" x2="46" y2="68" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="38" y1="80" x2="48" y2="77" stroke="#F7F5F0" stroke-width="1.5"/>
+</svg>`,
+
+oxum:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#F7F5F0"/>
+<circle cx="60" cy="48" r="34" fill="#2C2A25"/>
+<circle cx="60" cy="48" r="25" fill="#F7F5F0"/>
+<circle cx="60" cy="48" r="18" fill="#2C2A25"/>
+<ellipse cx="52" cy="40" rx="6" ry="4" fill="#F7F5F0" transform="rotate(-30,52,40)"/>
+<rect x="56" y="80" width="8" height="30" fill="#2C2A25" rx="3"/>
+<ellipse cx="60" cy="82" rx="14" ry="6" fill="#2C2A25"/>
+<line x1="28" y1="32" x2="36" y2="40" stroke="#2C2A25" stroke-width="3"/>
+<line x1="22" y1="48" x2="32" y2="48" stroke="#2C2A25" stroke-width="3"/>
+<line x1="28" y1="64" x2="36" y2="56" stroke="#2C2A25" stroke-width="3"/>
+<line x1="92" y1="32" x2="84" y2="40" stroke="#2C2A25" stroke-width="3"/>
+<line x1="98" y1="48" x2="88" y2="48" stroke="#2C2A25" stroke-width="3"/>
+<line x1="92" y1="64" x2="84" y2="56" stroke="#2C2A25" stroke-width="3"/>
+<line x1="58" y1="90" x2="62" y2="90" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="58" y1="97" x2="62" y2="97" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="58" y1="104" x2="62" y2="104" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`
+};
+
+const M={
+exu:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" fill="#F7F5F0"/>
+<rect x="37" y="8" width="6" height="64" fill="#2C2A25" rx="2"/>
+<rect x="8" y="37" width="64" height="6" fill="#2C2A25" rx="2"/>
+<circle cx="40" cy="40" r="9" fill="#F7F5F0"/>
+<circle cx="40" cy="40" r="5" fill="#2C2A25"/>
+<line x1="36" y1="36" x2="44" y2="44" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="44" y1="36" x2="36" y2="44" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`,
+ogum:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" fill="#F7F5F0"/>
+<rect x="37" y="12" width="6" height="52" fill="#2C2A25" rx="2"/>
+<polygon points="40,6 33,18 47,18" fill="#2C2A25"/>
+<rect x="28" y="54" width="24" height="7" fill="#2C2A25" rx="2"/>
+<line x1="39" y1="22" x2="41" y2="22" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="39" y1="32" x2="41" y2="32" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="39" y1="42" x2="41" y2="42" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`,
+xango:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" fill="#F7F5F0"/>
+<polygon points="48,8 36,38 46,38 30,72 60,36 48,36 58,8" fill="#2C2A25"/>
+<line x1="44" y1="14" x2="40" y2="26" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="50" y1="42" x2="44" y2="56" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`,
+oxossi:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" fill="#F7F5F0"/>
+<ellipse cx="40" cy="36" rx="22" ry="28" fill="#2C2A25"/>
+<rect x="37" y="62" width="6" height="14" fill="#2C2A25" rx="2"/>
+<line x1="40" y1="44" x2="40" y2="20" stroke="#F7F5F0" stroke-width="2.5"/>
+<line x1="40" y1="32" x2="28" y2="24" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="40" y1="32" x2="52" y2="24" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="40" y1="42" x2="28" y2="36" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="40" y1="42" x2="52" y2="36" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`,
+oxala:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" fill="#F7F5F0"/>
+<ellipse cx="40" cy="46" rx="22" ry="16" fill="#2C2A25"/>
+<ellipse cx="56" cy="42" rx="12" ry="7" fill="#2C2A25" transform="rotate(-20,56,42)"/>
+<ellipse cx="24" cy="42" rx="12" ry="7" fill="#2C2A25" transform="rotate(20,24,42)"/>
+<ellipse cx="40" cy="37" rx="11" ry="14" fill="#2C2A25"/>
+<circle cx="45" cy="34" r="3.5" fill="#F7F5F0"/>
+<circle cx="45" cy="34" r="1.5" fill="#2C2A25"/>
+<path d="M48,37 Q52,35 50,40" stroke="#F7F5F0" stroke-width="1.5" fill="none"/>
+<polygon points="40,60 34,72 46,72" fill="#2C2A25"/>
+<line x1="37" y1="66" x2="43" y2="66" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="29" y1="50" x2="37" y2="46" stroke="#F7F5F0" stroke-width="1.5"/>
+<line x1="51" y1="50" x2="43" y2="46" stroke="#F7F5F0" stroke-width="1.5"/>
+</svg>`,
+iemanja:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" fill="#F7F5F0"/>
+<path d="M8,28 Q20,20 32,28 Q44,36 56,28 Q68,20 72,28" stroke="#2C2A25" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M8,44 Q20,36 32,44 Q44,52 56,44 Q68,36 72,44" stroke="#2C2A25" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M8,60 Q20,52 32,60 Q44,68 56,60 Q68,52 72,60" stroke="#2C2A25" stroke-width="6" fill="none" stroke-linecap="round"/>
+<polygon points="40,8 42,14 49,14 43,18 46,25 40,21 34,25 37,18 31,14 38,14" fill="#2C2A25"/>
+</svg>`,
+oxum:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" fill="#F7F5F0"/>
+<circle cx="40" cy="40" r="12" fill="#2C2A25"/>
+<ellipse cx="40" cy="20" rx="9" ry="13" fill="#2C2A25"/>
+<ellipse cx="40" cy="60" rx="9" ry="13" fill="#2C2A25"/>
+<ellipse cx="20" cy="40" rx="13" ry="9" fill="#2C2A25"/>
+<ellipse cx="60" cy="40" rx="13" ry="9" fill="#2C2A25"/>
+<ellipse cx="24" cy="24" rx="10" ry="12" fill="#2C2A25" transform="rotate(-45,24,24)"/>
+<ellipse cx="56" cy="24" rx="10" ry="12" fill="#2C2A25" transform="rotate(45,56,24)"/>
+<ellipse cx="24" cy="56" rx="10" ry="12" fill="#2C2A25" transform="rotate(45,24,56)"/>
+<ellipse cx="56" cy="56" rx="10" ry="12" fill="#2C2A25" transform="rotate(-45,56,56)"/>
+<circle cx="40" cy="40" r="8" fill="#F7F5F0"/>
+<circle cx="40" cy="40" r="4" fill="#2C2A25"/>
+<line x1="36" y1="36" x2="44" y2="44" stroke="#F7F5F0" stroke-width="2"/>
+<line x1="44" y1="36" x2="36" y2="44" stroke="#F7F5F0" stroke-width="2"/>
+</svg>`
+};
+
+const DATA=[
+  {w:"Segunda-feira",o:"Exu",ik:"exu",
+   r:["Anote suas intenções","Acenda uma vela vermelha","Beba café de manhã","Chegue cedo onde precisa"],
+   p:"\u201cA encruzilhada não é obstáculo — é onde o destino se decide.\u201d",
+   it:{t:"A abertura dos caminhos",b:"Exu habitava todas as encruzilhadas do mundo. Certa vez, dois homens chegaram ao mesmo cruzamento com pedidos opostos. Em vez de escolher um, Exu dançou ao centro e mostrou a cada um a saída que lhe pertencia. Não por justiça fria — mas porque conhecia o coração de cada um antes que abrissem a boca."},
+   g:{t:"Estratégia e atenção",tips:[{k:"Faça",b:"Avalie os dois lados antes de qualquer decisão. O impulso está a seu favor — use-o com inteligência."},{k:"Evite",b:"Tomar atalhos sem considerar as consequências. Os sinais estão nos pequenos detalhes do dia."}]}},
+  {w:"Terça-feira",o:"Ogum",ik:"ogum",
+   r:["Vista vermelho ou preto","Mova o corpo cedo","Resolva algo pendente","Água com limão ao acordar"],
+   p:"\u201cO ferro que não é usado enferruja; o guerreiro que não avança, estagna.\u201d",
+   it:{t:"O desbravador dos matos",b:"Ogum foi o primeiro a entrar nas matas fechadas, abrindo trilhas para que os outros pudessem viver. Carregava o facão sem hesitar. Não por crueldade — mas porque sabia que onde há mata densa, há vida esperando ser alcançada. Ele não destruía: abria espaço para o futuro."},
+   g:{t:"Ação e determinação",tips:[{k:"Faça",b:"Enfrente o que tem adiado. Trabalho físico, exercício, movimento — coloque o corpo em ação."},{k:"Evite",b:"Agressividade desnecessária. Ficar preso em planejamento sem executar."}]}},
+  {w:"Quarta-feira",o:"Xangô",ik:"xango",
+   r:["Fale só verdades hoje","Use roxo ou marrom","Chá de gengibre","Resolva um conflito antigo"],
+   p:"\u201cA justiça tarda, mas não falha — e quando chega, o trovão anuncia.\u201d",
+   it:{t:"O rei e o julgamento",b:"Xangô era rei de Oyó e nenhuma mentira sobrevivia à sua presença. Dizia-se que via a verdade nos olhos antes que as palavras fossem ditas. Um dia, dois anciãos disputavam uma terra. Xangô os ouviu em silêncio, pegou uma pedra de raio e a entregou ao que falava a verdade. O outro fugiu sem que ninguém precisasse dizê-lo."},
+   g:{t:"Justiça e verdade",tips:[{k:"Faça",b:"Resolva conflitos com honestidade. Aja com equidade nas decisões que envolvem outros."},{k:"Evite",b:"Omitir verdades por comodidade. Julgar antes de ouvir todos os lados."}]}},
+  {w:"Quinta-feira",o:"Oxóssi",ik:"oxossi",
+   r:["Caminhe descalço na terra","Use verde ou azul","Observe a natureza","Coma algo colhido da terra"],
+   p:"\u201cUma flecha bem lançada nunca volta — escolha bem seu alvo.\u201d",
+   it:{t:"O caçador de um só tiro",b:"Oxóssi era o caçador mais preciso da floresta. Mas sua grandeza não estava na pontaria — estava na paciência. Esperava horas em silêncio, respirando com a mata, até que o momento exato chegasse. Seus companheiros caçavam muito. Ele caçava certo. E nunca ninguém voltou com fome quando Oxóssi estava na mata."},
+   g:{t:"Foco e precisão",tips:[{k:"Faça",b:"Concentre-se em uma coisa de cada vez. Conecte-se com a natureza — uma caminhada, um parque, um jardim."},{k:"Evite",b:"Desperdiçar energia em múltiplas direções. Decisões apressadas sem o tempo de observação necessário."}]}},
+  {w:"Sexta-feira",o:"Oxalá",ik:"oxala",
+   r:["Vista branco","Tome um banho lento","Beba água pura ao acordar","Evite discussões hoje"],
+   p:"\u201cA água que corre devagar atravessa a pedra mais dura.\u201d",
+   it:{t:"O criador das formas",b:"Oxalá moldou os corpos humanos com barro branco, com mãos lentas e silenciosas. Não havia pressa, porque sabia que o que é feito com calma dura para sempre. Quando questionaram por que demorava tanto, respondeu apenas: o que crio precisa ser digno de receber vida. E cada forma que saía de suas mãos era única — nunca havia duas iguais."},
+   g:{t:"Paz e equilíbrio",tips:[{k:"Faça",b:"Pratique o silêncio — meditação, respiração, contemplação. Vista branco como abertura espiritual."},{k:"Evite",b:"Pressa e discussões desnecessárias. Este é um dia para a lentidão sagrada."}]}},
+  {w:"Sábado",o:"Iemanjá",ik:"iemanja",
+   r:["Vá até a água","Banho de alfazema","Use azul claro ou branco","Escreva o que quer deixar ir"],
+   p:"\u201cO mar não guarda rancor — apenas transforma o que recebe.\u201d",
+   it:{t:"Mãe das águas profundas",b:"Iemanjá vivia onde o rio encontra o mar. Dizia-se que ouvia cada pedido que chegava à beira da água — não porque fosse onipotente, mas porque as águas carregam tudo o que tocam. Uma mãe que perdeu seu filho foi até a praia e chorou tanto que o mar subiu. Iemanjá não trouxe o filho de volta. Mas ficou ao seu lado enquanto as ondas a abraçavam."},
+   g:{t:"Cuidado e emoção",tips:[{k:"Faça",b:"Cuide de quem ama — uma palavra, uma mensagem, uma presença. Permita-se sentir o que pede atenção."},{k:"Evite",b:"Reprimir o que quer ser expresso. Cobranças excessivas de si mesmo ou dos outros."}]}},
+  {w:"Domingo",o:"Oxum",ik:"oxum",
+   r:["Banho com mel e canela","Use amarelo ou dourado","Olhe-se no espelho com amor","Chá de camomila"],
+   p:"\u201cO ouro não precisa gritar para ser reconhecido.\u201d",
+   it:{t:"A senhora das águas doces",b:"Oxum era a mais bela entre os orixás, mas o que a tornava irresistível não era a aparência — era o amor que transbordava dela em forma de água doce. Carregava um espelho não por vaidade, mas para lembrar seu próprio valor quando o mundo tentava diminuí-la. Quem bebia de suas águas sentia a doçura que havia esquecido dentro de si."},
+   g:{t:"Amor próprio e beleza",tips:[{k:"Faça",b:"Cuide de si com intenção: banho lento, alimentação consciente. Reconheça seu valor sem precisar de validação."},{k:"Evite",b:"Comparações que diminuem sua autoestima. Desperdiçar doçura com quem não a valoriza."}]}}
+];
+
+const DELAYS=[0,180,360,520,680,860,1060];
+function todayIdx(){const d=new Date().getDay();return d===0?6:d-1}
+
+function go(idx){
+  const f=document.getElementById('flash');
+  f.classList.add('on');
+  setTimeout(()=>{
+    render(idx);
+    document.getElementById('scroll').scrollTop=0;
+    f.classList.remove('on');
+    animate();
+  },160);
+}
+
+function render(idx){
+  const d=DATA[idx];
+  document.querySelectorAll('.pill').forEach((b,i)=>b.classList.toggle('on',i===idx));
+  document.getElementById('dlabel').textContent=d.w;
+  document.getElementById('main-illo').innerHTML=I[d.ik]||'';
+  document.getElementById('oname').textContent=d.o;
+  document.getElementById('rituals').innerHTML=d.r.map(r=>`<span class="ritual">${r}</span>`).join('');
+  document.getElementById('prov').textContent=d.p;
+  document.getElementById('ititle').textContent=d.it.t;
+  document.getElementById('ibody').textContent=d.it.b;
+  document.getElementById('mid-illo').innerHTML=M[d.ik]||'';
+  document.getElementById('gtitle').textContent=d.g.t;
+  document.getElementById('tips').innerHTML=d.g.tips.map(t=>
+    `<div class="tip"><span class="tip-tag ${t.k==='Faça'?'do':'dont'}">${t.k}</span><span class="tip-text">${t.b}</span></div>`
+  ).join('');
+}
+
+function animate(){
+  const bs=document.querySelectorAll('.fb');
+  bs.forEach(b=>b.classList.remove('in'));
+  bs.forEach((b,i)=>setTimeout(()=>b.classList.add('in'),DELAYS[i]!==undefined?DELAYS[i]:i*160));
+}
+
+function tick(){
+  const n=new Date();
+  document.getElementById('clk').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+}
+tick();setInterval(tick,10000);
+
+window.addEventListener('load',()=>{
+  render(todayIdx());
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('out');
+    setTimeout(()=>{document.getElementById('loader').style.display='none';animate();},900);
+  },1800);
+});
+</script>
+</body>
+</html>
